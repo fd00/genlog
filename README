@@ -1,0 +1,61 @@
+GenLog version 0.0
+(this document taken from http://www.organix.tv/research/genlog/)
+
+Realistic* automated generation of extended web log entries
+* Almost
+
+genlog is a program for generating somewhat realistic (and tunable) log entries. I use it for testing a web usage
+mining tool ... You can do whatever you like with it.
+
+genlog is GPL'd, for your pleasure and mine.
+
+With Apache you can create real extended log entries with the following directives in httpd.conf:
+
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" extended
+CustomLog logs/extended_log extended
+	
+
+With genlog you can simulate a webserver responding to requests from an average load of 100 users at a time making
+requests at 3000 requests per minute for half an hour to the website at http://www.cs.rpi.edu/~moorthy as:
+
+> genlog --graph=./moorthy.gr --run-for-seconds=1800 --requests-per-min=3000 --num-users=100
+	
+
+Voila, logs are generated as if being created by a web server.
+
+
+Caveats
+
+* If you want 3000 requests per minute, you'll get less than that. genlog calculates how long to sleep between
+requests based on the requests/min spec, but doesnt account for how long it takes to generate an entry. For me on a
+2Ghz p4 with loads of memory it takes about .02 seconds to generate a single log entry.
+* You need a website for users to traverse. Its a beautiful idea it seems, that you can create a shell of a website
+and put little fake users on it, but creating the shells of websites is not normal practice for most folks. You can
+download Dr. Mukkai Krishnamoorthy's website from /research/graphs/moorthy.gr. You can also download Dr. John Punin's
+Java Course. These files are XGMML graphs with extra meta-data which was obtained by setting a modified version of
+w3c's webbot loose to spider through a given website. Please email me if you would like to create your own graphs and
+would like help.
+* If you would like to just get log data and process it after, you'll need to do some programming or convince me to
+do it. Right now I generate logs as in real time. Asking for 1 request per minute will actually take 1 minute to
+generate a request, rather than pump out logs with 1 minute between the timestamps.
+
+
+> genlog --help
+
+genlog 0.0 
+Send patches and bug reports to morria@cs.rpi.edu
+
+Usage: genlog [--version] [--help] --graph
+        [--run-for-seconds] [--number-requests] [--requests-per-min]
+        [--user-timeout] [--num-users] [--no-wait]
+
+  -v,--version                          Print version information and quit
+  -h,--help                             Print this help information and quit
+  -q,--quiet                            Be quiet ( no debug output to stderr )
+  -s,--run-for-seconds=<SECONDS>        Generate log entries for SECONDS seconds
+  -n,--number-requests=<REQUESTS>       Generate REQUESTS log entries
+  -r,--requests-per-min=<RPM>           Generate RPM requests per minute
+  -t,--user-timeout=<TIMEOUT>           Have users tend leave by TIMEOUT seconds
+  -u,--num-users=<USERS>                Try to have USERS random active users at any time
+  -w,--no-wait                          Do not pause between log entries ( timestamps are
+                                         not adjusted )

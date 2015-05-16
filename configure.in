@@ -1,0 +1,45 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.57)
+AC_INIT(genlog, 0.1, asm@theory.stanford.edu)
+AC_CONFIG_SRCDIR([graphpack-1.0/src/alist.c])
+AC_CONFIG_HEADER([config.h])
+AM_INIT_AUTOMAKE
+
+GRAPHPACK=`pwd`/graphpack-1.0/src
+AC_SUBST(GRAPHPACK)
+
+# Yeah, I actually need to check for w3c-libwww
+AC_ARG_WITH(www_lib,
+	AC_HELP_STRING([--with-www_lib=<path>],[prefix of w3c-libwww headers]),
+	[WWW_LIB_DIR=$with_www_lib],
+	[WWW_LIB_DIR="/usr/local/include/w3c-libwww"])
+AC_SUBST(WWW_LIB_DIR)
+
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_RANLIB
+
+# Checks for libraries.
+
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([memset pow sqrt strcasecmp strdup])
+
+AC_CONFIG_FILES([Makefile
+                 graphs/Makefile
+                 graphpack-1.0/Makefile
+                 graphpack-1.0/src/Makefile
+                 src/Makefile])
+AC_OUTPUT
